@@ -35,6 +35,7 @@ export default class ClusterSubscriber {
       }
       if (getNodeKey(this.subscriber.options) === key) {
         debug("subscriber has left, selecting a new one...");
+        this.emitter.emit("forceRefresh");
         this.selectSubscriber();
       }
     });
@@ -99,7 +100,7 @@ export default class ClusterSubscriber {
     // the ClusterSubscriber connection is created with { retryStrategy: null }
     // and the cluster is created with { slotsRefreshInterval: undefined } (slotsRefreshInterval https://github.com/redis/ioredis/blob/main/lib/cluster/ClusterOptions.ts#L217)
     // if the subscriber connection terminated due to a node dying
-    // we must (TBC) refresh slot cache
+    // we must refresh slot cache
     this.emitter.emit("forceRefresh");
     
     // If the subscriber closes whilst it's still the active connection,
